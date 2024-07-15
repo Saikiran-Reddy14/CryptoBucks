@@ -67,7 +67,7 @@ const TableComponent = () => {
                         : "text-red py-4"
                     }
                   >
-                    {data.market_cap_change_percentage_24h.toFixed(3)}%
+                    {data.market_cap_change_percentage_24h}%
                   </td>
                   <td
                     className={
@@ -76,7 +76,10 @@ const TableComponent = () => {
                         : "text-red py-4"
                     }
                   >
-                    {data.price_change_percentage_1h_in_currency.toFixed(3)}%
+                    {Number(
+                      data.price_change_percentage_1h_in_currency
+                    ).toFixed(2)}
+                    %
                   </td>
                   <td
                     className={
@@ -85,7 +88,7 @@ const TableComponent = () => {
                         : "text-red py-4"
                     }
                   >
-                    {data.price_change_percentage_24h.toFixed(3)}%
+                    {Number(data.price_change_percentage_24h).toFixed(2)}%
                   </td>
                 </tr>
               );
