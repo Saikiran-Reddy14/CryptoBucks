@@ -8,6 +8,9 @@ export const CryptoProvider = ({ children }) => {
   const [coinSearch, setCoinSearch] = useState("");
   const [currency, setCurrency] = useState("usd");
   const [sortBy, setSortBy] = useState("market_cap_desc");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(250);
+  const [perPage, setPerPage] = useState(10);
 
   const getCoinData = async () => {
     const options = {
@@ -30,6 +33,11 @@ export const CryptoProvider = ({ children }) => {
     }
   };
 
+  const resetFunc = () => {
+    setPage(1);
+    setCoinSearch("");
+  };
+
   const getCryptoData = async () => {
     const options = {
       method: "GET",
@@ -41,7 +49,17 @@ export const CryptoProvider = ({ children }) => {
 
     try {
       const response = await fetch(
-        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&ids=${coinSearch}&order=${sortBy}&per_page=10&page=1&sparkline=false&price_change_percentage=1h%2C%2024h%2C%207d`,
+        `https://api.coingecko.com/api/v3/coins/list`,
+        options
+      );
+      const data = await response.json();
+      setTotalPages(data.length);
+    } catch (err) {
+      console.error(err);
+    }
+    try {
+      const response = await fetch(
+        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&ids=${coinSearch}&order=${sortBy}&per_page=${perPage}&page=${page}&sparkline=false&price_change_percentage=1h%2C%2024h%2C%207d`,
         options
       );
       const data = await response.json();
@@ -74,7 +92,7 @@ export const CryptoProvider = ({ children }) => {
 
   useLayoutEffect(() => {
     getCryptoData();
-  }, [coinSearch, currency, sortBy]);
+  }, [coinSearch, currency, sortBy, page, perPage]);
 
   return (
     <CryptoContext.Provider
@@ -88,6 +106,12 @@ export const CryptoProvider = ({ children }) => {
         setCurrency,
         sortBy,
         setSortBy,
+        page,
+        setPage,
+        totalPages,
+        resetFunc,
+        perPage,
+        setPerPage,
       }}
     >
       {children}
